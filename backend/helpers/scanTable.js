@@ -49,7 +49,7 @@ const validateUser = async (username, password) => {
   try {
     const data = await docClient.send(new GetCommand(params));
     if (data.Item && data.Item.password) {
-      const match = await verifyPassword(password, data.Item.password);
+      const match = verifyPassword(password, data.Item.password);
       return match;
     } else {
       return false;
@@ -80,7 +80,7 @@ const registerUser = async (username, password) => {
     }
 
     // Username does not exist, proceed with registration
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = hashPassword(password);
 
     const putItemParams = {
       TableName: "users",

@@ -1,82 +1,94 @@
 const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const { body, validationResult } = require('express-validator');
+// const csrf = require('csurf');
+const helmet = require('helmet');
 
-const { generateKeys, decryptAll } = require('./helpers/crypto');
 const { paginatedScanUsingPaginator } = require('./helpers/scanTable');
 const { validateUser, registerUser } = require('./helpers/scanTable');
 const { generateToken, authenticateToken } = require('./auth/authToken');
+const { loginLimiter, requestLimiter, registerLimiter } = require('./auth/limiters');
 
 const app = express();
 const port = 8080;
 
-const { publicKey, privateKey } = generateKeys();
-
-app.use(cors());
+app.use(helmet());
+app.use(cors(/*{ origin: 'http://localhost:3000', credentials: true }*/));
 app.use(bodyParser.json());
-app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+// CSRF protection 
+// const csrfProtection = csrf({ cookie: true });
+// app.use(csrfProtection);
 
-app.get('/', (req, res) => {
-  let ip = req.ip;
-  console.log(`Request from ${ip}`);
-  paginatedScanUsingPaginator();
-  res.send('Hello World!');
-});
+app.post('/register', requestLimiter, [
+  body('username').isString().isLength({ min: 3 }),
+  body('password').isLength({ min: 5 }),
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
 
-// Endpoint to provide the backend's public key to the frontend
-app.get('/public-key', (req, res) => {
-  let ip = req.ip;
-  console.log(`Public key request from ${ip}`);
-  res.json({ publicKey });
-});
-
-app.get('/protected', authenticateToken, (req, res) => {
-  res.status(200).json({ message: 'This is a protected route', user: req.user });
-});
-
-/**
- * User endpoints
- */
-
-app.post('/login', async(req, res) => {
   const { username, password } = req.body;
 
-  // Check if username and password are defined
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Invalid request body' });
-  }
-
-  const decrypted = decryptAll(privateKey, [username, password]);
-
-  const validUser = await validateUser(decrypted[0], decrypted[1]);
-
-  if (!validUser) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  const token = generateToken(decrypted[0]);
-
-  res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
-  res.json({ message: "Login successful" });
-});
-
-app.post('/register', async (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ error: 'Invalid request body' });
-  }
-
-  const decrypted = decryptAll(privateKey, [username, password]);
-
-  const registration = await registerUser(decrypted[0], decrypted[1]);
+  const registration = await registerUser(username, password);
 
   if (!registration.success) {
     return res.status(400).json({ error: registration.message });
   }
 
-  res.json({ message: "Registration successful" });
+  res.status(201).json({ message: "Registration successful" });
+});
+
+app.post('/login', loginLimiter, [
+  body('username').isString().isLength({ min: 3 }),
+  body('password').isLength({ min: 5 }),
+], async(req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { username, password } = req.body;
+
+  const validUser = await validateUser(username, password);
+
+  if (!validUser) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  const token = generateToken(username);
+
+  res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+  res.json({ message: "Login successful", token });
+});
+
+// Endpoint to get CSRF token
+// app.get('/csrf-token', (req, res) => {
+//   try {
+//     const csrfToken = req.csrfToken();
+//     res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'strict' });
+//     res.json({ csrfToken });
+//   } catch (error) {
+//     console.error('Error generating CSRF token:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+// Secure endpoint
+app.get('/secure-data', requestLimiter, authenticateToken, (req, res) => {
+  res.json({ message: 'This is secure data', user: req.auth });
+});
+
+app.use((err, req, res, next) => {
+  if (err.code === 'EBADCSRFTOKEN') {
+      // Handle CSRF token errors
+      res.status(403).send('CSRF Protection Error');
+  } else {
+      // Handle other errors
+      next(err);
+  }
 });
 
 app.listen(port, () => {
