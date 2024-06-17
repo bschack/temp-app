@@ -1,10 +1,11 @@
 import axios from "axios"
-import { getCookie } from 'typescript-cookie'
 
-export const fetchSecureData = async () => {
+export const fetchSecureData = async (token: string) => {
+
   try {
+    console.log(token);
     const response = await axios.get('http://localhost:8080/secure-data',
-      { headers: { 'Authorization': `Bearer ${getCookie('token')}` } }
+      { headers: { 'authorization': `Bearer ${token}` } }
     );
 
     return { success: true, message: response.data.message, data: response.data.data };
