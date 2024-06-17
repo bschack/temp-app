@@ -14,7 +14,7 @@ const app = express();
 const port = 8080;
 
 app.use(helmet());
-app.use(cors(/*{ origin: 'http://localhost:3000', credentials: true }*/));
+app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // CSRF protection 
@@ -78,7 +78,7 @@ app.post('/login', loginLimiter, [
 
 // Secure endpoint
 app.get('/secure-data', requestLimiter, authenticateToken, (req, res) => {
-  res.json({ message: 'This is secure data', user: req.auth });
+  res.json({ message: 'This is secure data', user: req.auth, data: '42' });
 });
 
 app.use((err, req, res, next) => {
