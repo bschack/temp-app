@@ -60,7 +60,7 @@ app.post('/login', loginLimiter, [
 
   const token = generateToken(username);
 
-  res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'strict' });
+  res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
   res.json({ message: "Login successful", token });
 });
 
