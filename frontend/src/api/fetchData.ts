@@ -4,7 +4,7 @@ export const fetchSecureData = async (token: string) => {
 
   try {
     console.log(token);
-    const response = await axios.get('http://localhost:8080/secure-data',
+    const response = await axios.get('https://tempappbackend-sc20eg0e.b4a.run/secure-data',
       { headers: { 'authorization': `Bearer ${token}` } }
     );
 
