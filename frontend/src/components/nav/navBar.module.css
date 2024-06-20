@@ -1,0 +1,29 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #181818;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 4em;
+}
+
+.linkGroup {
+  display: flex;
+  gap: 1rem;
+  transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.linkGroup>* {
+  transition: 0.3s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.linkGroup>*:hover {
+  transform: translateY(-1px);
+  color: rgb(98, 197, 230);
+  cursor: pointer;
+}
+
+.logout:hover {
+  color: rgb(255, 82, 82);
+}

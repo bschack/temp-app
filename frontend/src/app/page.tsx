@@ -1,22 +1,14 @@
-'use server';
-
-import { HomePageData } from "@/components/Data";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+'use client'
 
 import styles from "./page.module.css";
 
-export default async function Home() {
-  const token = cookies().get("token");
-
-  if (!token) {
-    redirect("/login");
-  }
-
+export default function Home() {
   return (
     <main className={styles.main}>
-      <h1>Home</h1>
-      <HomePageData jwtToken={token} />
+      {/* <button onClick={handleClearSession}>Clear User Session</button> */}
+      <h1>
+        Hello :3
+      </h1>
     </main>
   );
 }
