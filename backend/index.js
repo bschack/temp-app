@@ -1,96 +1,109 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const cors = require('cors');
-const { body, validationResult } = require('express-validator');
-// const csrf = require('csurf');
 const helmet = require('helmet');
+const next = require('next');
+const path = require('path');
+const crypto = require('crypto');
 
-const { paginatedScanUsingPaginator } = require('./helpers/scanTable');
+const { body, validationResult } = require('express-validator');
+
 const { validateUser, registerUser } = require('./helpers/scanTable');
 const { generateToken, authenticateToken } = require('./auth/authToken');
-const { loginLimiter, requestLimiter, registerLimiter } = require('./auth/limiters');
+const { loginLimiter, requestLimiter } = require('./auth/limiters');
 
-const app = express();
-const port = 8080;
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev, dir: path.join(__dirname, '../frontend') });
+const handle = app.getRequestHandler();
 
-app.use(helmet());
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-// CSRF protection 
-// const csrfProtection = csrf({ cookie: true });
-// app.use(csrfProtection);
+const port = process.env.PORT || 3000;
 
-app.post('/register', requestLimiter, [
-  body('username').isString().isLength({ min: 3 }),
-  body('password').isLength({ min: 5 }),
-], async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+app.prepare().then(() => {
+  const server = express();
 
-  const { username, password } = req.body;
+  server.use(bodyParser.json());
+  server.use(bodyParser.urlencoded({ extended: true }));
 
-  const registration = await registerUser(username, password);
+  // Middleware to generate a nonce and set CSP headers
+  server.use((req, res, next) => {
+    res.locals.nonce = crypto.randomBytes(16).toString('base64');
 
-  if (!registration.success) {
-    return res.status(400).json({ error: registration.message });
-  }
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", `'nonce-${res.locals.nonce}'`],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", "data:"],
+          connectSrc: ["'self'", "ws:"],
+          fontSrc: ["'self'", "https:", "data:"],
+          objectSrc: ["'none'"],
+          frameSrc: ["'none'"],
+          formAction: ["'self'"],
+          frameAncestors: ["'self'"],
+        },
+      },
+    })(req, res, next);
+  });
 
-  res.status(201).json({ message: "Registration successful" });
-});
+  // API routes
+  server.post('/api/register', requestLimiter, [
+    body('username').isString().isLength({ min: 3 }),
+    body('password').isLength({ min: 5 }),
+  ], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-app.post('/login', loginLimiter, [
-  body('username').isString().isLength({ min: 3 }),
-  body('password').isLength({ min: 5 }),
-], async(req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+    const { username, password } = req.body;
 
-  const { username, password } = req.body;
+    const registration = await registerUser(username, password);
 
-  const validUser = await validateUser(username, password);
+    if (!registration.success) {
+      return res.status(400).json({ error: registration.message });
+    }
 
-  if (!validUser) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
+    res.status(201).json({ message: "Registration successful" });
+  });
 
-  const token = generateToken(username);
+  server.post('/api/login', loginLimiter, [
+    body('username').isString().isLength({ min: 3 }),
+    body('password').isLength({ min: 5 }),
+  ], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-  res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
-  res.json({ message: "Login successful", token });
-});
+    const { username, password } = req.body;
 
-// Endpoint to get CSRF token
-// app.get('/csrf-token', (req, res) => {
-//   try {
-//     const csrfToken = req.csrfToken();
-//     res.cookie('csrfToken', csrfToken, { httpOnly: true, secure: true, sameSite: 'strict' });
-//     res.json({ csrfToken });
-//   } catch (error) {
-//     console.error('Error generating CSRF token:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// });
+    const validUser = await validateUser(username, password);
 
-// Secure endpoint
-app.get('/secure-data', requestLimiter, authenticateToken, (req, res) => {
-  res.json({ message: 'This is secure data', user: req.auth, data: '42' });
-});
+    if (!validUser) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
 
-app.use((err, req, res, next) => {
-  if (err.code === 'EBADCSRFTOKEN') {
-      // Handle CSRF token errors
-      res.status(403).send('CSRF Protection Error');
-  } else {
-      // Handle other errors
-      next(err);
-  }
-});
+    const token = generateToken(username);
 
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
+    res.json({ message: "Login successful", token });
+  });
+
+  // Secure endpoint
+  server.get('/api/secure-data', requestLimiter, authenticateToken, (req, res) => {
+    res.json({ message: 'This is secure data', user: req.auth, data: '42' });
+  });
+
+  // Catch all other routes and let Next.js handle them
+  server.get('*', (req, res) => {
+    return handle(req, res);
+  });
+
+  server.listen(port, (err) => {
+    if (err) throw err;
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+}).catch((ex) => {
+  console.error(ex.stack);
+  process.exit(1);
 });
