@@ -19,7 +19,7 @@ export const authenticate = async (formData: { email: string, password: string }
   try {
     const user = await getUserByEmail(email);
     const { name, password: userPassword, image, role, id } = user;
-    console.log(userPassword, password)
+    // console.log(userPassword, password)
 
     const isAuthenticated = await verifyPassword(password, userPassword);
 
