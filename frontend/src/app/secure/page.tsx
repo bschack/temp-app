@@ -8,10 +8,9 @@ export default function Secure() {
 
   if (session) {
     return (
-      <div>
-        <h1>Secure</h1>
+      <main>
         Do secure stuff here
-      </div>
+      </main>
     )
   }
   

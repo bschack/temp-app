@@ -8,12 +8,13 @@ enum UserRole {
 
 export const signInSchema = object({
   email: string({ required_error: "Username is required" })
+    .email("Invalid email")
   // .min(1, "Username is required")
   // .max(32, "Username must be less than 32 characters")
   ,
   password: string({ required_error: "Password is required" })
     .min(1, "Password is required")
-    .min(3, "Password must be more than 8 characters")
+    .min(3, "Password must be more than 3 characters")
     .max(32, "Password must be less than 32 characters"),
 });
 

@@ -28,8 +28,7 @@ export default function Admin() {
 
   if (session && session.userRole === 'admin') {
     return (
-      <div>
-        <h1>Admin</h1>
+      <main>
         <section>
           <h3>Create User</h3>
           <input type="text" name="name" placeholder="Name" onChange={handleChange} />
@@ -37,7 +36,7 @@ export default function Admin() {
           <input type="password" name='password' placeholder="Password" onChange={handleChange} />
           <button onClick={handleSubmit}>Create</button>
         </section>
-      </div>
+      </main>
     )
   }
   

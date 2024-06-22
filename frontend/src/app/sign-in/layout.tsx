@@ -11,6 +11,9 @@ export default function SignInLayout({
 }>) {
   return (
     <>
+      <header>
+        <h2>Sign In</h2>
+      </header>
       {children}
     </>
   );

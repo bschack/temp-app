@@ -31,12 +31,15 @@ export default function Page() {
       setError(error.message);
     }
   }
+
   return (
     <main className={styles.login_page}>
-      <input className={styles.input} type="email" name="email" placeholder="Email" onChange={handleChange} />
-      <input className={styles.input} type="password" name='password' placeholder="Password" onChange={handleChange} />
-      <button className={styles.submit} onClick={handleSubmit}>Login</button>
-      {error && <div className={styles.error}>{error}</div>}
+      <div className={styles.input_container}>
+        <input className={styles.input} type="email" name="email" placeholder="Email" onChange={handleChange} />
+        <input className={styles.input} type="password" name='password' placeholder="Password" onChange={handleChange} />
+        <button className={styles.submit} onClick={handleSubmit}>Login</button>
+        {error && <div className={styles.error}>{error}</div>}
+      </div>
     </main>
   )
 }

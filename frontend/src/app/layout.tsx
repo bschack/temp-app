@@ -3,7 +3,6 @@ import { SessionProvider } from "@/context/SessionContext";
 import NavBar from "@/components/nav/navBar";
 
 import "./globals.css";
-import { hashPassword } from "@/auth";
 
 export const metadata: Metadata = {
   title: "App - Welcome",
@@ -14,23 +13,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const password = "Password0";
-
-  // const stuff = async () => { 
-  //   const hash = await hashPassword(password);
-  //   console.log(hash);
-  // };
-
-  // stuff();
-
   return (
     <html lang="en">
-      <body>
-        <SessionProvider>
+      <SessionProvider>
+        <body>
           <NavBar />
           {children}
-        </SessionProvider>
-      </body>
+        </body>
+      </SessionProvider>
     </html>
   );
 }
