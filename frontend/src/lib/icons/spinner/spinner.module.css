@@ -1,0 +1,19 @@
+.spinner {
+  animation: spin 2s linear infinite;
+  fill: rgb(106, 106, 241, 0.5);
+  height: 1rem;
+  position: absolute;
+  right: 0.5rem;
+  /* top: 50%; */
+  /* transform: translateY(-50%); */
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
