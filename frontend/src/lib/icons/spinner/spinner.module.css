@@ -1,7 +1,7 @@
 .spinner {
   animation: spin 2s linear infinite;
-  fill: rgb(106, 106, 241, 0.5);
-  height: 1rem;
+  fill: rgb(255, 255, 255, 0.5);
+  height: 2rem;
   position: absolute;
   right: 0.5rem;
   /* top: 50%; */

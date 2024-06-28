@@ -23,6 +23,7 @@ export const Modal = ({ children, header, close }: ModalProps & { close: () => v
     <div className={clsx(styles.modal_overlay, isClosing && styles.closing)} onClick={handleClose}>
       <div className={styles.modal} onClick={e => {e.stopPropagation()}}>
         <div className={styles.modal_header}>
+          <div></div>
           <h2>{header}</h2>
           <div onClick={handleClose}><Close /></div>
         </div>

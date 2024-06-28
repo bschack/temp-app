@@ -8,19 +8,61 @@ import { CompanySearch } from "@/components/companySearch";
 import { useSessionContext } from "@/context/SessionContext";
 import { StockCard } from "@/components/stockCard/StockCard";
 import { queryAllStockData } from "@/lib/rapid/allStock";
-
-import styles from './index.module.css';
 import { StockData } from "@/lib/rapid/schema";
+import { Button } from "@/components/button/Button";
+
+import styles from './index.module.scss';
+import clsx from "clsx";
+import { ChevronRight } from "@/lib/icons/chevron-right/chevronRight";
 
 const AddStock = ({ addSymbol }: { addSymbol: (symbol: string) => void }) => {
   const { Modal, openModal } = useModal({ header: 'Search', children: <CompanySearch onSelect={addSymbol} /> });
 
   return (
-    <div>
-      <button onClick={openModal}>+</button>
+    <>
+      <Button onClick={openModal} className={styles.dropdown_item}>+</Button>
       {Modal}
-    </div>
+    </>
   )
+}
+
+const Dropdown = ({ label, elements, active }: { label: string, elements: React.ReactNode[], active: number }) => {
+  const [open, setOpen] = useState<boolean>(false);
+  const [closing, setClosing] = useState<boolean>(false);
+
+  const toggleDropdown = () => {
+    if (!open) {
+      setClosing(true);
+      setTimeout(() => {
+        setOpen(true);
+        setClosing(false);
+      }, 500);
+    }
+    else {
+      setClosing(true);
+      setTimeout(() => {
+        setOpen(false);
+        setClosing(false);
+      }, 500);
+    }
+  }
+
+  return (
+    <div className={styles.dropdown}>
+      <div className={styles.dropdown_label} onClick={toggleDropdown} data-active={!closing ? open : false}>{label}<ChevronRight /></div>
+      <div className={styles.dropdown_wrapper}>
+        {open ? (
+          <div className={styles.dropdown_content} data-closing={closing}>
+            {elements}
+          </div>
+        ) : (
+          <div className={styles.dropdown_content} data-closing={closing}>
+            {elements[active]}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 const Carousel = ({ stockData }: { stockData: Array<StockData> }) => {
@@ -145,14 +187,19 @@ export default function Secure() {
     return (
       <>
         <aside className={styles.side_bar}>
-          {/* {currentSymbol}
-          <select id="symbolSelect" value={currentSymbol} onChange={handleSymbolChange}>
-            <option value="">Select...</option>
-            {userSymbols.map(symbol => (
-              <option key={symbol} value={symbol}>{symbol}</option>
-            ))}
-          </select> */}
-          <AddStock addSymbol={handleAddSymbol} />
+          <Dropdown label="Watchlist"
+            elements={[...userSymbols.map((symbol, index) => (
+              <div
+                className={styles.dropdown_item}
+                data-active={symbol === focusedSymbol}
+                key={index}
+                onClick={() => setFocusedSymbol(symbol)}
+              >
+                {symbol}
+              </div>
+            )), <AddStock key={Math.random()} addSymbol={handleAddSymbol} />]}
+            active={userSymbols.indexOf(focusedSymbol)}
+          />
         </aside>
         <main className={styles.dashboard}>
           <section>

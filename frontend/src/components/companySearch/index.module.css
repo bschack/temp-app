@@ -16,6 +16,11 @@
   /* flex-wrap: wrap; */
   overflow-y: scroll;
   max-height: 30rem;
+  scrollbar-width: 0px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   &>div {
     width: 100%;
@@ -38,12 +43,14 @@
   position: relative;
 
   &>input {
-    padding: 0.5rem;
-    border: 1px solid rgb(106, 106, 241, 0.25);
-    border-radius: 0.5rem;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    font-size: 1.5rem;
+    border-radius: 1rem;
     outline: none;
-    transition: 0.2s cubic-bezier(0.77, 0, 0.175, 1);
-    font-size: 1rem;
+    width: 100%;
+    border: 1px solid transparent;
 
     &:focus {
       border: 1px solid rgb(106, 106, 241, 0.5);
