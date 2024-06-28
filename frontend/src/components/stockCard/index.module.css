@@ -1,0 +1,76 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 21rem;
+  min-width: 18rem;
+  padding-top: 1.5rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 1rem;
+  gap: 1rem;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: min-content auto;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "symbol exchange"
+    "symbol name";
+  padding: 0 1.5rem;
+  gap: 0.25rem 0.75rem;
+  align-items: center;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.5rem;
+  gap: 0.5rem;
+}
+
+.graph {
+  height: 33%;
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 500;
+  color: white;
+}
+
+.change {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 15px;
+  font-weight: 400;
+  color: white;
+  cursor: pointer;
+}
+
+.change__positive {
+  color: #46f04d;
+}
+
+.change__negative {
+  color: #f34645;
+}
+
+.symbol {
+  font-size: 1.5rem;
+  font-weight: 600;
+  grid-area: symbol;
+}
+
+.exchange {
+  font-size: 13px;
+  font-weight: 400;
+  grid-area: exchange;
+  color: gray;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 400;
+  grid-area: name;
+}

@@ -10,7 +10,14 @@
   },
   "dependencies": {
     "@auth/pg-adapter": "^1.2.0",
+    "@hello-pangea/dnd": "^16.6.0",
     "@types/jsonwebtoken": "^9.0.6",
+    "@visx/axis": "^3.10.1",
+    "@visx/responsive": "^3.10.2",
+    "@visx/scale": "^3.5.0",
+    "@visx/shape": "^3.5.0",
+    "@visx/tooltip": "^3.3.0",
+    "@visx/visx": "^3.11.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "clsx": "^2.1.1",
@@ -23,6 +30,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.52.0",
+    "recharts": "^2.12.7",
     "typescript-cookie": "^1.0.6",
     "zod": "^3.23.8"
   },

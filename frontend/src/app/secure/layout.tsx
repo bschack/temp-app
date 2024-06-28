@@ -12,9 +12,6 @@ export default function SecureLayout({
 
   return (
     <>
-      <header>
-        <h2>Secure</h2>
-      </header>
       {children}
     </>
   )

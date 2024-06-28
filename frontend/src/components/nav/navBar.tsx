@@ -14,11 +14,6 @@ const NavBar = () => {
 
   return (
     <nav className={styles.nav}>
-      <div>
-        <Link href="/">
-          <h3>Ben&apos;s Test Website</h3>
-        </Link>
-      </div>
       {session ? (
         <div className={styles.linkGroup}>
           <Link href="/secure">Secure</Link>

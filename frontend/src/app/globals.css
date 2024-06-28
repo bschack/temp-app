@@ -80,11 +80,19 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  /* background: linear-gradient(135deg, #1a1a1a, #1f2c3e); */
+  background: linear-gradient(135deg, #2a3b4d, #3e5a73 40%, #4e7891 60%, #3e5a73);
+  background: linear-gradient(135deg, #1b2632, #253746 40%, #173c51 60%, #283a4a);
   font-family: "Inter", sans-serif;
   height: 100%;
+  overflow-y: hidden;
+  display: grid;
+  grid-template-columns: max-content auto;
+  grid-template-rows: min-content auto;
+
+  &>* {
+    padding: 2rem;
+  }
 }
 
 a {

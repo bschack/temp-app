@@ -1,0 +1,6 @@
+.trend_down {
+  height: 15px;
+  aspect-ratio: 1/1;
+  fill: #f34645;
+  /* box-shadow: 0 0 0.5rem #46f04d; */
+}

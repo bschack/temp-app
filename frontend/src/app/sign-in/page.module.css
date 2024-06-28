@@ -2,11 +2,13 @@
   display: flex;
   align-items: center;
   flex-direction: column;
+  grid-column-start: 1;
+  grid-column-end: span 2;
 }
 
 .input {
   border: none;
-  background: #1e1e1e;
+  background: rgba(0, 0, 0, 0.1);
   padding: 1rem;
   font-size: 1.5rem;
   border-radius: 1rem;
@@ -21,12 +23,16 @@
   font-size: 1.5rem;
   border-radius: 1rem;
   border: none;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .submit:hover {
-  color: lightblue;
-  transform: translateY(-1px);
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.1);
+  /* transform: translateY(-1px); */
 }
 
 .error {

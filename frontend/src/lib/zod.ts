@@ -1,5 +1,6 @@
 import { JwtPayload } from "jsonwebtoken";
 import { date, literal, number, object, string, z } from "zod";
+import { PriceResponseSchema, QuoteResponseSchema, SeriesResponseSchema } from "./rapid/schema";
 
 enum UserRole {
   ADMIN = "admin",
@@ -42,3 +43,11 @@ export const SessionPayloadSchema = object({
 });
 
 export type SessionPayload = z.infer<typeof SessionPayloadSchema> | false;
+
+export const StockDataSchema = object({
+  quote: QuoteResponseSchema,
+  price: PriceResponseSchema,
+  series: SeriesResponseSchema,
+});
+
+export type StockData = z.infer<typeof StockDataSchema>;

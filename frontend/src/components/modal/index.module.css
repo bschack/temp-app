@@ -9,6 +9,7 @@
   top: 0;
   left: 0;
   animation: appear 0.3s forwards;
+  z-index: 100;
 }
 
 .closing {

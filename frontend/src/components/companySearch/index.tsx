@@ -1,26 +1,37 @@
-import { querySearch } from "@/lib/finnhub/queries";
-import { SearchResponse } from "@/lib/finnhub/schema";
+
 import { useEffect, useState } from "react";
 
-import styles from './index.module.css';
 import { Spinner } from "@/lib/icons/spinner/Spinner";
+import { querySearch } from "@/lib/rapid/search";
+import { SearchData } from "@/lib/rapid/schema";
 
-const SearchResults = ({ results }: { results: SearchResponse }) => {
+import styles from './index.module.css';
+
+type SearchProps = {
+  onSelect: (symbol: string) => void;
+}
+
+type SearchResultsProps = SearchProps & {
+  results: SearchData[]
+}
+
+const SearchResults = ({ results, onSelect }: SearchResultsProps) => {
   return (
     <div className={styles.search_results}>
-      {results.result.map((result, index) => (
-        <div key={index}>
-          <h3>{result.displaySymbol}</h3>
-          <p>{result.description}</p>
+      {results.map((result, index) => (
+        <div key={index} onClick={() => {onSelect(result.symbol)}}>
+          <h3>{result.symbol}</h3>
+          <p>{result.instrument_name}</p>
+          <p>{result.exchange}</p>
         </div>
       ))}
     </div>
   );
 }
 
-export const CompanySearch = () => {
+export const CompanySearch = ({ onSelect }: SearchProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [searchResults, setSearchResults] = useState<SearchResponse>({ count: 0, result: [] });
+  const [searchResults, setSearchResults] = useState<SearchData[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -28,21 +39,21 @@ export const CompanySearch = () => {
       const fetchSearchResults = async () => {
         try {
           if (!searchTerm) {
-            setSearchResults({ count: 0, result: [] });
+            setSearchResults([]);
             return;
           }
           else if (searchTerm.length < 2) return;
           setLoading(true);
           const res = await querySearch(searchTerm);
           setLoading(false);
-          setSearchResults(res);
+          setSearchResults(res ? res : []);
         } catch (error: any) {
           console.log(error.message);
         }
       }
 
       fetchSearchResults();
-    }, 300);
+    }, 1000);
 
     return () => clearTimeout(delayDebounceFn); 
 
@@ -54,7 +65,7 @@ export const CompanySearch = () => {
         <input type="text" placeholder="Search" onChange={(e) => setSearchTerm(e.target.value)} />
         {loading && <Spinner />}
       </div>
-      {searchResults.count > 0 && <SearchResults results={searchResults} />}
+      {searchResults.length > 0 && <SearchResults results={searchResults} onSelect={onSelect} />}
     </div>
   );
 }

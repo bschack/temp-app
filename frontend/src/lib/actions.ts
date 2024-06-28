@@ -24,7 +24,7 @@ export const authenticate = async (formData: { email: string, password: string }
     const isAuthenticated = await verifyPassword(password, userPassword);
 
     if (isAuthenticated) {
-      const token = jwt.sign({ userId: id, userRole: role, name, image }, process.env.AUTH_SECRET as string, { expiresIn: '1h' });
+      const token = jwt.sign({ userId: id, userRole: role, name, image }, process.env.AUTH_SECRET as string, { expiresIn: '5h' });
 
       cookies().set('session', token, {
         httpOnly: true,

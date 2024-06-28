@@ -1,11 +1,11 @@
 .nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: #181818;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 4em;
+  /* background-color: #181818; */
+  /* box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1); */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* height: 4em; */
 }
 
 .linkGroup {
@@ -19,8 +19,8 @@
 }
 
 .linkGroup>*:hover {
-  transform: translateY(-1px);
-  color: rgb(98, 197, 230);
+  /* transform: translateY(-1px); */
+  color: rgba(255, 255, 255, 0.5);
   cursor: pointer;
 }
 

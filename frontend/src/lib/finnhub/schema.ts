@@ -21,6 +21,8 @@ export const QuoteResponseSchema = object({
   o: number(),
   pc: number(),
   t: number(),
+  d: number(),
+  dp: number(),
 });
 
 export type QuoteResponse = z.infer<typeof QuoteResponseSchema>;

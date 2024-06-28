@@ -4,3 +4,12 @@
   gap: 1rem;
   justify-content: center;
 }
+
+.logo_container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.1);
+  border-width: 0px 1px 1px 0px;
+}
