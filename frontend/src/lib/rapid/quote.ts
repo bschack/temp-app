@@ -1,13 +1,7 @@
 import axios from 'axios';
 import { QuoteResponseSchema } from './schema';
-import { mockQuote } from './mocks';
-
 
 export const queryQuote = async (symbol: string, mock?: boolean) => {
-  if (mock) {
-    return mockQuote;
-  }
-
   const options = {
     method: 'GET',
     url: 'https://twelve-data1.p.rapidapi.com/quote',

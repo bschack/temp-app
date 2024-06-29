@@ -1,12 +1,7 @@
 import axios from "axios";
 import { PriceResponseSchema } from "./schema";
-import { mockPrice } from "./mocks";
 
 export const queryPrice = async (symbol: string, mock?: boolean) => {
-  if (mock) {
-    return mockPrice;
-  }
-
   const options = {
     method: 'GET',
     url: 'https://twelve-data1.p.rapidapi.com/price',

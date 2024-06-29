@@ -1,6 +1,5 @@
 import axios from "axios";
 import { SeriesResponseSchema } from "./schema";
-import { mockSeries } from "./mocks";
 
 const splits = (split: string) => {
   switch (split) {
@@ -34,10 +33,6 @@ const splits = (split: string) => {
 
 export const querySeries = async (symbol: string, split: string = "day", mock?: boolean) => {
   const interval = splits(split);
-
-  if (mock) {
-    return mockSeries;
-  }
 
   const options = {
     method: 'GET',
