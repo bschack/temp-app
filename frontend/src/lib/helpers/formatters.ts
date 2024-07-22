@@ -23,12 +23,13 @@ export const formatPercent = (value?: number) => {
   ).format(value);
 }
 
-export const formatDate = (date: Date) => {
+export const formatDate = (date: Date, options?: Intl.DateTimeFormatOptions) => {
   return new Intl.DateTimeFormat('en-US',
     {
-      year: '2-digit',
-      month: 'short',
-      day: '2-digit',
+      year: options?.year ?? '2-digit',
+      month: options?.month ?? 'short',
+      day: options?.day ?? '2-digit',
+      ...options,
     }
   ).format(date);
 }

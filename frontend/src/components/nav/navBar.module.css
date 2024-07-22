@@ -6,6 +6,7 @@
   /* box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1); */
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   /* height: 4em; */
+  grid-area: nav;
 }
 
 .linkGroup {

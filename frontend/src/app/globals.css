@@ -82,13 +82,19 @@ body {
   background: linear-gradient(135deg, #1b2632, #253746 40%, #173c51 60%, #283a4a);
   font-family: "Inter", sans-serif;
   height: 100%;
-  overflow-y: hidden;
+  overflow: hidden;
   display: grid;
   grid-template-columns: max-content auto;
   grid-template-rows: min-content auto;
 
+  grid-template-areas: "title nav" "sidebar main";
+
   &>* {
     padding: 2rem;
+  }
+
+  &>*:not(nav, aside, main, div) {
+    display: none;
   }
 }
 

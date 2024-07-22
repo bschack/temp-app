@@ -12,4 +12,5 @@
   border-style: solid;
   border-color: rgba(255, 255, 255, 0.1);
   border-width: 0px 1px 1px 0px;
+  grid-area: title;
 }

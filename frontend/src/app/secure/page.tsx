@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 
 import { useModal } from "@/components";
@@ -10,10 +10,10 @@ import { StockCard } from "@/components/stockCard/StockCard";
 import { queryAllStockData } from "@/lib/rapid/allStock";
 import { StockData } from "@/lib/rapid/schema";
 import { Button } from "@/components/button/Button";
+import { ChevronRight } from "@/lib/icons/chevron-right/chevronRight";
+import { formatDate } from "@/lib/helpers/formatters";
 
 import styles from './index.module.scss';
-import clsx from "clsx";
-import { ChevronRight } from "@/lib/icons/chevron-right/chevronRight";
 
 const AddStock = ({ addSymbol }: { addSymbol: (symbol: string) => void }) => {
   const { Modal, openModal } = useModal({ header: 'Search', children: <CompanySearch onSelect={addSymbol} /> });
@@ -144,6 +144,18 @@ const Carousel = ({ stockData }: { stockData: Array<StockData> }) => {
   );
 };
 
+const StockDetails = ({ data }: { data: StockData }) => {
+  return (
+    <div className={styles.detail_card}>
+      <div>
+        <div>Last Updated {formatDate(new Date(data[1].timestamp * 1000), {hour: "2-digit", minute: "2-digit", timeZone: data[0].meta.exchange_timezone})}</div>
+        <h1>{data[1].symbol}</h1>
+        <p>{data[1].name}</p>
+      </div>
+    </div>
+  );
+}
+
 export default function Secure() {
   const { session } = useSessionContext();
   const [userSymbols, setUserSymbols] = useState<Array<string>>(['AAPL', 'GS', 'PLTR']); // ['AAPL', 'TSLA', 'MSFT']
@@ -204,7 +216,9 @@ export default function Secure() {
         <main className={styles.dashboard}>
           <section>
             <Carousel stockData={stockData} />
-            {focusedData && focusedData[1].symbol}
+          </section>
+          <section>
+            {focusedData && <StockDetails data={focusedData} />}
           </section>
         </main>
       </>
